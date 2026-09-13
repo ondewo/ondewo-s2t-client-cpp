@@ -2,7 +2,7 @@
 
 *****************
 
-## Release ONDEWO S2T C++ Client 0.1.0
+## Release ONDEWO S2T C++ Client 7.5.0
 
 ### New Features
 
