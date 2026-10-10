@@ -74,7 +74,7 @@ carries the built package as an asset: `ondewo_s2t_client-<version>-<platform>.t
 package-config files - so consuming it is one `find_package`, with no compiler run and no Docker.
 
 ```shell
-version=7.5.0
+version=7.5.1
 platform=linux-x86_64     ## uname -s | tr A-Z a-z, then uname -m
 archive=ondewo_s2t_client-${version}-${platform}.tar.gz
 
@@ -119,7 +119,7 @@ set(ONDEWO_LIBRARY_NAME ondewo_s2t_client CACHE STRING "" FORCE)
 FetchContent_Declare(
   ondewo_s2t_client
   GIT_REPOSITORY https://github.com/ondewo/ondewo-s2t-client-cpp.git
-  GIT_TAG        7.5.0)
+  GIT_TAG        7.5.1)
 FetchContent_MakeAvailable(ondewo_s2t_client)
 
 # Note the UNqualified target name: the `ondewo::` namespace is created by the install/export step
