@@ -2,6 +2,28 @@
 
 *****************
 
+## Release ONDEWO S2T C++ Client 7.6.2
+
+### New Features
+
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) Keycloak authentication with offline-token start-up, matching ondewo-s2t-client-python 7.6.2 (this release carries the python SDK's 7.6.1 and 7.6.2 Keycloak work at once, so every language shares one version for one feature set): the header-only `<ondewo/client/keycloak.h>`: `ClientConfig` gains `keycloak_url`, `realm`, `client_id`, `username`, `password`, `token_expiration_in_s`, `verify_ssl` and `refresh_token` (appended last), plus `KeycloakTokenProvider`, a gRPC `MetadataCredentialsPlugin`, `CreateAuthenticatedChannel()` and `AddKeycloakAuthorization()`; the libcurl transport lives in `<ondewo/client/keycloak_curl.h>`, so only its users link libcurl.
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) A handed-off Keycloak *offline* refresh token starts the client with one `grant_type=refresh_token` exchange, and the client then never sends a password grant, not even as a fallback; a refused token is never answered with a password login. A Keycloak config needs `password` OR `refresh_token`, all Keycloak fields are validated all-or-nothing, and the password and the token are redacted in every rendering.
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) Resilient refresh: a failed refresh never ends the refresh loop; the proactive refresh and the per-call (lazy) refresh share one full-jitter backoff (5 s doubling to 300 s, measured from the recorded failure) and send no request while it runs; concurrent callers share one in-flight refresh. A still-valid token keeps being served while a refresh fails, and only an expired token raises `KeycloakAuthenticationError`.
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) One shared provider per credential set, keyed by a SHA-256 of the credentials, so two configs of different tenants never share one. The token request has a 10 s timeout, quoted Keycloak error bodies are cut at 500 characters, and a token response is reported by its field names only, never its values.
+
+### Bug Fixes
+
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) A quoted error body is cut at 500 characters (UTF-8 code points), as python's `body[:500]`, instead of 500 bytes; a multi-byte character is never split.
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) A provider whose `token_expiration_in_s` deadline ended its background refresh is still handed out by the registry, as in python; only a provider closed with `Stop()` / `Close()` is replaced (new `closed()` accessor).
+
+### Improvements
+
+* [[OND236-120]](https://ondewo.atlassian.net/browse/OND236-120) Tests: `tests/test_keycloak.cc` implements T01-T62 on a fake token endpoint and clock, plus the bearer header on the wire and the curl transport on loopback; `make coverage` keeps 100 % lines.
+
+API unchanged: tracking API Version [7.6.0](https://github.com/ondewo/ondewo-s2t-api/releases/tag/7.6.0) ( [Documentation](https://ondewo.github.io/ondewo-s2t-api/) )
+
+*****************
+
 ## Release ONDEWO S2T C++ Client 7.6.0
 
 ### Improvements
